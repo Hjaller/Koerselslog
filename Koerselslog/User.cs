@@ -10,11 +10,13 @@ namespace Koerselslog
     {
         public string Name { get; set; }    
         public string LicensePlate { get; set; }    
-        public User (string name, string licensePlate)
+        public string Date { get; set; }
+        public User(string name, string licensePlate, string date)
         {
             Name = name;    
             LicensePlate = licensePlate;
-
+            Date = date;
         }
+
     }
 }
