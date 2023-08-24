@@ -9,6 +9,8 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Sql;
 using System.Data.SqlClient;
+using System.Diagnostics;
+
 namespace Koerselslog
 {
     public partial class Form1 : Form
@@ -17,13 +19,14 @@ namespace Koerselslog
         {
             InitializeComponent();
             dateTimePicker2.Enabled = false;
-            dateTimePicker1.Enabled = false;
             //Add users to dropdown menu 
-
             updateComboBox(comboBox1, new Crud().getNames());
             updateComboBox(comboBox2, new Crud().getNames());
+            updateComboBox(comboBox3, new Crud().getNames());
+
         }
 
+        //Update Combobox
         public void updateComboBox(ComboBox combo, List<string> items)
         {
             combo.Items.Clear();
@@ -110,18 +113,13 @@ namespace Koerselslog
         {
 
         }
-
+        //combobox navne opdater bruger
         private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            if (comboBox1.SelectedItem == null)
-            {
-                dateTimePicker1.Enabled = false;
-
-            }
-            else
-            {
-                dateTimePicker1.Enabled = true;
-            }
+            Debug.WriteLine(comboBox1.SelectedItem.ToString());
+            if (!new Crud().getNames().Contains(comboBox1.SelectedItem.ToString())) {
+                comboBox1.SelectedItem = null;
+            } 
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -196,6 +194,7 @@ namespace Koerselslog
             label2.Text = "Bruger oprettet";
             updateComboBox(comboBox1, new Crud().getNames());
             updateComboBox(comboBox2, new Crud().getNames());
+            updateComboBox(comboBox3, new Crud().getNames());
 
         }
 
@@ -249,6 +248,7 @@ namespace Koerselslog
             comboBox2.SelectedItem = null;
             updateComboBox(comboBox1, new Crud().getNames());
             updateComboBox(comboBox2, new Crud().getNames());
+            updateComboBox(comboBox3, new Crud().getNames());
         }
 
         private void label19_Click(object sender, EventArgs e)
@@ -259,6 +259,37 @@ namespace Koerselslog
         private void button3_Click(object sender, EventArgs e)
         {
 
+            string errorMessage = "";
+            if (textBox2.TextLength <= 0)
+            {
+                errorMessage = "Du skal skrive en nummerplade";
+            }
+            if (textBox2.TextLength > 7)
+            {
+                errorMessage = "Din nummerplade er for lang";
+            }
+            if (errorMessage != "")
+            {
+                label6.Visible = true;
+                label6.ForeColor = Color.Red;
+                label6.Text = errorMessage;
+                return;
+            }
+            label6.Visible = true;
+            label6.ForeColor = Color.LightGreen;
+            label6.Text = "Bruger opdateret";
+            
+            string[] name = comboBox1.SelectedItem.ToString().Split('|');
+            int id;
+
+            try
+            {
+                int.TryParse(name[1], out id);
+            } catch {
+                return;
+            }
+            new Crud().updateUser(id, textBox2.Text);
+            
         }
 
         private void label3_Click_1(object sender, EventArgs e)
@@ -272,6 +303,38 @@ namespace Koerselslog
         }
 
         private void label17_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label7_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label6_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            string[] name = comboBox3.SelectedItem.ToString().Split('|');
+            int id;
+
+            try
+            {
+                int.TryParse(name[1], out id);
+            }
+            catch
+            {
+                return;
+            }
+            textBox4.Text = new Crud().getLicensePlateFromId(id);
+            
+        }
+
+        private void textBox4_TextChanged(object sender, EventArgs e)
         {
 
         }
