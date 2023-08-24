@@ -108,6 +108,23 @@ namespace Koerselslog
             return "";
         }
 
+        public void createDrivingLog(int user_id, string assignment, string date)
+        {
+            string queryString = "insert into [dbo].[driving_logs] (assignment,date,user_id) values (@assignment, @date, @user_id);";
+            using (SqlConnection connection = new SqlConnection(
+                      Program.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(
+                    queryString, connection);
+                command.Parameters.AddWithValue("@assignment", assignment);
+                command.Parameters.AddWithValue("@date", date);
+                command.Parameters.AddWithValue("@user_id", user_id);
+
+                command.ExecuteNonQuery();
+                connection.Close();
+            }
+        }
 
 
     }

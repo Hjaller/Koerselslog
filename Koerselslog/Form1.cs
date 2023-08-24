@@ -34,6 +34,7 @@ namespace Koerselslog
 
         }
 
+
         private void Form1_Load(object sender, EventArgs e)
         {
 
@@ -200,7 +201,40 @@ namespace Koerselslog
 
         private void button1_Click_2(object sender, EventArgs e)
         {
+            string errorMessage = "";
+            if(comboBox3.SelectedItem == null)
+            {
+                errorMessage = "Vælg venligst en bruger!";
+            } 
+            else if(textBox5.TextLength <= 0)
+            {
+                errorMessage = "Skriv venligst en opgave";
+            }
 
+            if (errorMessage != "")
+            {
+                label11.Visible = true;
+                label11.ForeColor = Color.Red;
+                label11.Text = errorMessage;
+                return;
+            }
+
+            label11.Visible = true;
+            label11.ForeColor = Color.LightGreen;
+            string[] name = comboBox3.SelectedItem.ToString().Split('|');
+            int id;
+
+            try
+            {
+                int.TryParse(name[1], out id);
+            }
+            catch
+            {
+                return;
+            }
+            
+            new Crud().createDrivingLog(id, textBox5.Text, dateTimePicker3.Value.ToString());
+            label11.Text = "Opgave oprettet!";
         }
         //tekst opret bruger
         private void label2_Click_1(object sender, EventArgs e)
@@ -334,7 +368,24 @@ namespace Koerselslog
             
         }
 
+
+
         private void textBox4_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void textBox5_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void label11_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void dateTimePicker3_ValueChanged(object sender, EventArgs e)
         {
 
         }
