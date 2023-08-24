@@ -190,12 +190,16 @@ namespace Koerselslog
             }
             label2.Visible = true;
             label2.ForeColor = Color.LightGreen;
-            User user = new User(textBox1.Text, textBox3.Text, dateTimePicker2.Value.ToString());
-            new Crud().saveUser(user);
             label2.Text = "Bruger oprettet";
+            new Crud().saveUser(new User(textBox1.Text, textBox3.Text, dateTimePicker2.Value.ToString()));
             updateComboBox(comboBox1, new Crud().getNames());
             updateComboBox(comboBox2, new Crud().getNames());
             updateComboBox(comboBox3, new Crud().getNames());
+            textBox1.Clear();
+            textBox3.Clear();
+            dateTimePicker2.Value = DateTime.Now;
+
+
 
         }
 
@@ -235,6 +239,10 @@ namespace Koerselslog
             
             new Crud().createDrivingLog(id, textBox5.Text, dateTimePicker3.Value.ToString());
             label11.Text = "Opgave oprettet!";
+            comboBox3.SelectedItem = null;
+            dateTimePicker3.Value = DateTime.Now;
+            textBox5.Clear();
+            textBox4.Clear();
         }
         //tekst opret bruger
         private void label2_Click_1(object sender, EventArgs e)
@@ -353,18 +361,21 @@ namespace Koerselslog
 
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string[] name = comboBox3.SelectedItem.ToString().Split('|');
-            int id;
+            if(comboBox3.SelectedItem != null && comboBox3.SelectedItem.ToString().Contains("|"))
+            {
+                string[] name = comboBox3.SelectedItem.ToString().Split('|');
+                int id;
 
-            try
-            {
-                int.TryParse(name[1], out id);
+                try
+                {
+                    int.TryParse(name[1], out id);
+                }
+                catch
+                {
+                    return;
+                }
+                textBox4.Text = new Crud().getLicensePlateFromId(id);
             }
-            catch
-            {
-                return;
-            }
-            textBox4.Text = new Crud().getLicensePlateFromId(id);
             
         }
 
