@@ -131,5 +131,28 @@ namespace Koerselslog
                 connection.Close();
             }
         }
+        public List<Utils.Assignments> drivingLogDetails()
+        {
+            List<Utils.Assignments> assignments = new List<Utils.Assignments>();
+            string queryString = "SELECT [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[date] FROM [dbo].[users], [dbo].[driving_logs] where [users].[id]=[driving_logs].[user_id];";
+            using (SqlConnection connection = new SqlConnection(
+                      Program.connectionString))
+            {
+                SqlCommand command = new SqlCommand(
+                    queryString, connection);
+                connection.Open();
+                using (SqlDataReader reader = command.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        assignments.Add(new Utils.Assignments(int.Parse(reader[0].ToString()), reader[1].ToString(), reader[2].ToString(), reader[3].ToString(), reader[4].ToString()));
+                    }
+                    reader.Close();
+                    connection.Close();
+                }
+            }
+
+            return assignments;
+        }
     }
 }

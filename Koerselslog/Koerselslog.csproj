@@ -46,6 +46,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Utils\Assignments.cs" />
     <Compile Include="Utils\Crud.cs" />
     <Compile Include="Utils\User.cs" />
     <Compile Include="Form1.cs">

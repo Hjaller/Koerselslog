@@ -15,6 +15,8 @@ namespace Koerselslog
 {
     public partial class Form1 : Form
     {
+        int Index = 0;//Declaring a variable
+        SqlDataAdapter da;  
         public Form1()
         {
             InitializeComponent();
@@ -24,8 +26,25 @@ namespace Koerselslog
             updateComboBox(comboBox2, new Crud().getNames());
             updateComboBox(comboBox3, new Crud().getNames());
 
+            dataGridView1.ReadOnly = true;
+
+            updateGridView(dataGridView1);
+
+
+
+
         }
 
+
+        public void updateGridView(DataGridView dataGridView)
+        {
+
+            foreach (Utils.Assignments assignment in new Crud().drivingLogDetails())
+            {
+                dataGridView.Rows.Add(assignment.Id, assignment.Name, assignment.LicensePlate, assignment.Assignment, assignment.Date);
+            }
+
+        }
         //Update Combobox
         public void updateComboBox(ComboBox combo, List<string> items)
         {
@@ -37,7 +56,15 @@ namespace Koerselslog
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            filldata();
+        }
 
+        public void filldata()
+        {
+            da = new SqlDataAdapter("select * from [dbo].[users]", Program.connectionString);
+            DataTable dt = new DataTable();
+            da.Fill(dt);
+            dataGridView2.DataSource = dt;
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
@@ -418,6 +445,65 @@ namespace Koerselslog
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void dataGridView1_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void dataGridView2_CellContentClick(object sender, DataGridViewCellEventArgs e)
+        {
+
+        }
+
+
+
+
+        private void contextMenuStrip2_Opening(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void contextMenuStrip2_Opening_1(object sender, CancelEventArgs e)
+        {
+
+        }
+
+        private void dataGridView2_CellContentClick_1(object sender, DataGridViewCellEventArgs e)
+        {
+        }
+
+        private void dataGridView1_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+        }
+        private void deleteToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Are you sure want to Delete", "confirmation", MessageBoxButtons.YesNo);
+            if (dr == DialogResult.Yes)
+            {
+                int result = 1;
+                if (result == 1)
+                {
+                    MessageBox.Show("Record Deleted Successfully");
+                    filldata();
+                }
+                else
+                {
+                    MessageBox.Show("Record not Deleted....Please try again.");
+                }
+            }
+        }
+
+        private void dataGridView2_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Right)
+            {
+                this.dataGridView1.Rows[e.RowIndex].Selected = true;
+                this.Index = e.RowIndex;
+                this.dataGridView1.CurrentCell = this.dataGridView1.Rows[e.RowIndex].Cells[1];
+                this.contextMenuStrip1.Show(this.dataGridView1, e.Location);
+                contextMenuStrip1.Show(Cursor.Position);
+            }
         }
     }
 }
