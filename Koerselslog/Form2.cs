@@ -15,12 +15,14 @@ namespace Koerselslog
     /*To do
      * Tilføj redigering af bruger og kørselslog
      * Fix delay på beskeder når de skal fjernes
-     * Tilføj søgefunktion
+     * Tilføje så man også kan søge efter id'er i søgefunktionen
      */
     public partial class Form2 : Form
     {
         int Index = 0;
         private Crud api = new Crud();
+        DataTable drivinglogDT = new DataTable();
+        DataTable usersDT = new DataTable();
         public Form2()
         {
             InitializeComponent();
@@ -36,9 +38,8 @@ namespace Koerselslog
         public void fillUserData()
         {
             SqlDataAdapter da = new SqlDataAdapter("select [id], [name], [licensePlate], [date] from [dbo].[users] where [disabled]='false' or [disabled]='0'", Program.connectionString);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            dataGridView1.DataSource = dt;
+            da.Fill(usersDT);
+            dataGridView1.DataSource = usersDT;
 
             dataGridView1.Columns[0].ReadOnly = true;
         }
@@ -46,9 +47,8 @@ namespace Koerselslog
         public void fillDrivingLogData()
         {
             SqlDataAdapter da = new SqlDataAdapter("select [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[date], [driving_logs].[user_id] from [dbo].[driving_logs] inner join [dbo].[users] on [users].[id]=[driving_logs].[user_id] where [driving_logs].[disabled]='false' or [driving_logs].[disabled]='0'", Program.connectionString);
-            DataTable dt = new DataTable();
-            da.Fill(dt);
-            dataGridView2.DataSource = dt;
+            da.Fill(drivinglogDT);
+            dataGridView2.DataSource = drivinglogDT;
 
             dataGridView2.Columns[0].ReadOnly = true;
             dataGridView2.Columns[2].ReadOnly = true;
@@ -237,6 +237,15 @@ namespace Koerselslog
             dateTimePicker3.Value = DateTime.Now;
             comboBox3.SelectedItem = null;
 
+        }
+
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            DataView users_search = usersDT.DefaultView;
+            users_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%'";
+
+            DataView drivinglog_search = drivinglogDT.DefaultView;
+            drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%'";
         }
     }
 }
