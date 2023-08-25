@@ -13,7 +13,7 @@ namespace Koerselslog
     {
         public void saveUser(User user) {
             
-            string queryString = "insert into [dbo].[users] (name,licensePlate,date) values (@name, @licensePlate,@date);";
+            string queryString = "insert into [dbo].[users] (name,licensePlate,date,disabled) values (@name, @licensePlate,@date,@disabled);";
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
@@ -23,6 +23,7 @@ namespace Koerselslog
                 command.Parameters.AddWithValue("@name", user.Name);
                 command.Parameters.AddWithValue("@licensePlate", user.LicensePlate);
                 command.Parameters.AddWithValue("@date", user.Date);
+                command.Parameters.AddWithValue("@disabled", false);
 
 
                 command.ExecuteNonQuery();
@@ -48,16 +49,17 @@ namespace Koerselslog
             }
         }
 
-        public void deleteUser(string name)
+        public void deleteUser(int id)
         {
-            string queryString = "delete from [dbo].[users] where name=@name;";
+            string queryString = "update [dbo].[users] set disabled=@disabled where id=@id;";
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
                     queryString, connection);
-                command.Parameters.AddWithValue("@name", name);
+                command.Parameters.AddWithValue("@disabled", "true");
+                command.Parameters.AddWithValue("@id", id);
 
 
                 command.ExecuteNonQuery();
@@ -68,12 +70,14 @@ namespace Koerselslog
         public List<string> getNames()
         {
             List<string> names =  new List<string>();
-            string queryString = "SELECT [name], [id] FROM [dbo].[users];";
+            string queryString = "SELECT [name], [id] FROM [dbo].[users] where disabled=@disabled or disabled=@disabled2;";
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
                 SqlCommand command = new SqlCommand(
                     queryString, connection);
+                command.Parameters.AddWithValue("@disabled", "false");
+                command.Parameters.AddWithValue("@disabled2", "0");
                 connection.Open();
                 using (SqlDataReader reader = command.ExecuteReader())
                 {
@@ -82,6 +86,7 @@ namespace Koerselslog
                         names.Add(reader[0].ToString() + "|" + reader[1].ToString());
                     }
                     reader.Close();
+                    connection.Close();
                 }
             }
             return names;
@@ -103,6 +108,7 @@ namespace Koerselslog
                         return reader[0].ToString();
                     }
                     reader.Close();
+                    connection.Close();
                 }
             }
             return "";
@@ -125,7 +131,5 @@ namespace Koerselslog
                 connection.Close();
             }
         }
-
-
     }
 }

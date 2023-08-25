@@ -128,7 +128,7 @@
             // 
             this.label19.AutoSize = true;
             this.label19.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label19.Location = new System.Drawing.Point(9, 80);
+            this.label19.Location = new System.Drawing.Point(9, 81);
             this.label19.Name = "label19";
             this.label19.Size = new System.Drawing.Size(51, 16);
             this.label19.TabIndex = 12;
@@ -548,7 +548,7 @@
             this.ClientSize = new System.Drawing.Size(1080, 531);
             this.Controls.Add(this.splitContainer1);
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Kørselslog";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.splitContainer1.Panel1.ResumeLayout(false);
             this.splitContainer1.Panel2.ResumeLayout(false);

@@ -117,10 +117,7 @@ namespace Koerselslog
         //combobox navne opdater bruger
         private void comboBox1_SelectedIndexChanged_1(object sender, EventArgs e)
         {
-            Debug.WriteLine(comboBox1.SelectedItem.ToString());
-            if (!new Crud().getNames().Contains(comboBox1.SelectedItem.ToString())) {
-                comboBox1.SelectedItem = null;
-            } 
+
         }
 
         private void dateTimePicker1_ValueChanged(object sender, EventArgs e)
@@ -285,7 +282,20 @@ namespace Koerselslog
             label19.Visible = true;
             label19.ForeColor = Color.LightGreen;
             User user = new User(textBox1.Text, textBox3.Text, dateTimePicker2.Value.ToString());
-            new Crud().deleteUser(comboBox2.SelectedItem.ToString());
+
+            string[] name = comboBox2.SelectedItem.ToString().Split('|');
+            int id;
+
+            try
+            {
+                int.TryParse(name[1], out id);
+            }
+            catch
+            {
+                return;
+            }
+
+            new Crud().deleteUser(id);
             label19.Text = "Bruger slettet";
             comboBox2.SelectedItem = null;
             updateComboBox(comboBox1, new Crud().getNames());
@@ -302,6 +312,10 @@ namespace Koerselslog
         {
 
             string errorMessage = "";
+            if(comboBox1.SelectedItem == null)
+            {
+                errorMessage = "Vælg venligst en bruger";
+            }
             if (textBox2.TextLength <= 0)
             {
                 errorMessage = "Du skal skrive en nummerplade";
@@ -397,6 +411,11 @@ namespace Koerselslog
         }
 
         private void dateTimePicker3_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void listView1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
         }
