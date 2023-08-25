@@ -61,10 +61,14 @@ namespace Koerselslog
 
         public void filldata()
         {
-            da = new SqlDataAdapter("select * from [dbo].[users]", Program.connectionString);
+            da = new SqlDataAdapter("select [id], [name], [licensePlate], [date] from [dbo].[users]", Program.connectionString);
             DataTable dt = new DataTable();
             da.Fill(dt);
             dataGridView2.DataSource = dt;
+
+            dataGridView2.Columns[0].ReadOnly = true;
+            dataGridView2.Columns[0].ReadOnly = true;
+            dataGridView2.Columns[0].ReadOnly = true;
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)
