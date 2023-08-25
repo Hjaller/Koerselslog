@@ -67,8 +67,6 @@ namespace Koerselslog
             dataGridView2.DataSource = dt;
 
             dataGridView2.Columns[0].ReadOnly = true;
-            dataGridView2.Columns[0].ReadOnly = true;
-            dataGridView2.Columns[0].ReadOnly = true;
         }
 
         private void groupBox1_Enter(object sender, EventArgs e)

@@ -49,7 +49,7 @@ namespace Koerselslog
             }
         }
 
-        public void deleteUser(int id)
+        public int deleteUser(int id)
         {
             string queryString = "update [dbo].[users] set disabled=@disabled where id=@id;";
             using (SqlConnection connection = new SqlConnection(
@@ -61,9 +61,10 @@ namespace Koerselslog
                 command.Parameters.AddWithValue("@disabled", "true");
                 command.Parameters.AddWithValue("@id", id);
 
-
-                command.ExecuteNonQuery();
+                int rows = command.ExecuteNonQuery();
                 connection.Close();
+                return rows;
+
             }
         }
 
