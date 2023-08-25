@@ -13,7 +13,7 @@ namespace Koerselslog
     {
         public void saveUser(User user) {
             
-            string queryString = "insert into [dbo].[users] (name,licensePlate,date,disabled) values (@name, @licensePlate,@date,@disabled);";
+            string queryString = "insert into [dbo].[users] (name,licensePlate,date) values (@name, @licensePlate,@date);";
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
@@ -23,7 +23,6 @@ namespace Koerselslog
                 command.Parameters.AddWithValue("@name", user.Name);
                 command.Parameters.AddWithValue("@licensePlate", user.LicensePlate);
                 command.Parameters.AddWithValue("@date", user.Date);
-                command.Parameters.AddWithValue("@disabled", false);
 
 
                 command.ExecuteNonQuery();
@@ -52,6 +51,25 @@ namespace Koerselslog
         public int deleteUser(int id)
         {
             string queryString = "update [dbo].[users] set disabled=@disabled where id=@id;";
+            using (SqlConnection connection = new SqlConnection(
+                      Program.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(
+                    queryString, connection);
+                command.Parameters.AddWithValue("@disabled", "true");
+                command.Parameters.AddWithValue("@id", id);
+
+                int rows = command.ExecuteNonQuery();
+                connection.Close();
+                return rows;
+
+            }
+        }
+
+        public int deleteDrivingLog(int id)
+        {
+            string queryString = "update [dbo].[driving_logs] set disabled=@disabled where id=@id;";
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
