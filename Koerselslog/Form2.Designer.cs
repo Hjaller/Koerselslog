@@ -262,8 +262,10 @@
             // 
             // comboBox3
             // 
+            this.comboBox3.DropDownHeight = 150;
             this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.IntegralHeight = false;
             this.comboBox3.Location = new System.Drawing.Point(91, 52);
             this.comboBox3.MaxDropDownItems = 20;
             this.comboBox3.Name = "comboBox3";

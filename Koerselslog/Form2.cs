@@ -16,6 +16,7 @@ namespace Koerselslog
      * Tilføj redigering af bruger og kørselslog
      * Fix delay på beskeder når de skal fjernes
      * Tilføje så man også kan søge efter id'er i søgefunktionen
+     * tilføje så man kan se flere navne i dropdown
      */
     public partial class Form2 : Form
     {
@@ -37,6 +38,7 @@ namespace Koerselslog
 
         public void fillUserData()
         {
+            usersDT.Clear();
             SqlDataAdapter da = new SqlDataAdapter("select [id], [name], [licensePlate], [date] from [dbo].[users] where [disabled]='false' or [disabled]='0'", Program.connectionString);
             da.Fill(usersDT);
             dataGridView1.DataSource = usersDT;
@@ -46,6 +48,7 @@ namespace Koerselslog
 
         public void fillDrivingLogData()
         {
+            drivinglogDT.Clear();
             SqlDataAdapter da = new SqlDataAdapter("select [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[date], [driving_logs].[user_id] from [dbo].[driving_logs] inner join [dbo].[users] on [users].[id]=[driving_logs].[user_id] where [driving_logs].[disabled]='false' or [driving_logs].[disabled]='0'", Program.connectionString);
             da.Fill(drivinglogDT);
             dataGridView2.DataSource = drivinglogDT;
