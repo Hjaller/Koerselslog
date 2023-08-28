@@ -11,11 +11,12 @@ namespace Koerselslog
 {
     internal class Crud
     {
+        public string connectionString = @"Data Source=192.168.16.147,1433;Database=drivinglog;User Id=root;Password=Adm1n123;";
         public void saveUser(User user) {
             
             string queryString = "insert into [dbo].[users] (name,licensePlate,date) values (@name, @licensePlate,@date);";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
@@ -33,7 +34,7 @@ namespace Koerselslog
         {
             string queryString = "update [dbo].[users] set licensePlate=@licensePlate where id=@id;";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
@@ -51,7 +52,7 @@ namespace Koerselslog
         {
             string queryString = "update [dbo].[users] set disabled=@disabled where id=@id;";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
@@ -70,7 +71,7 @@ namespace Koerselslog
         {
             string queryString = "update [dbo].[driving_logs] set disabled=@disabled where id=@id;";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
@@ -90,7 +91,7 @@ namespace Koerselslog
             List<string> names =  new List<string>();
             string queryString = "SELECT [name], [id] FROM [dbo].[users] where disabled=@disabled or disabled=@disabled2;";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 SqlCommand command = new SqlCommand(
                     queryString, connection);
@@ -113,7 +114,7 @@ namespace Koerselslog
         {
             string queryString = "SELECT licensePlate FROM [dbo].[users] where id=@id;";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 SqlCommand command = new SqlCommand(
                     queryString, connection);
@@ -136,7 +137,7 @@ namespace Koerselslog
         {
             string queryString = "insert into [dbo].[driving_logs] (assignment,distance,date,user_id) values (@assignment, @distance, @date, @user_id);";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(
@@ -155,7 +156,7 @@ namespace Koerselslog
             List<Utils.Assignments> assignments = new List<Utils.Assignments>();
             string queryString = "SELECT [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[date] FROM [dbo].[users], [dbo].[driving_logs] where [users].[id]=[driving_logs].[user_id];";
             using (SqlConnection connection = new SqlConnection(
-                      Program.connectionString))
+                      connectionString))
             {
                 SqlCommand command = new SqlCommand(
                     queryString, connection);
