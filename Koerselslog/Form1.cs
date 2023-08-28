@@ -263,7 +263,7 @@ namespace Koerselslog
                 return;
             }
             
-            new Crud().createDrivingLog(id, textBox5.Text, dateTimePicker3.Value.ToString());
+            //new Crud().createDrivingLog(id, textBox5.Text, dateTimePicker3.Value.ToString());
             label11.Text = "Opgave oprettet!";
             comboBox3.SelectedItem = null;
             dateTimePicker3.Value = DateTime.Now;

@@ -59,6 +59,8 @@
             this.sletKørelogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.textBox6 = new System.Windows.Forms.TextBox();
+            this.label7 = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
@@ -80,6 +82,7 @@
             this.dataGridView1.Size = new System.Drawing.Size(529, 201);
             this.dataGridView1.TabIndex = 0;
             this.dataGridView1.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView1_CellMouseUp);
+            this.dataGridView1.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView1_CellValueChanged);
             // 
             // groupBox1
             // 
@@ -91,7 +94,7 @@
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.textBox1);
-            this.groupBox1.Location = new System.Drawing.Point(12, 59);
+            this.groupBox1.Location = new System.Drawing.Point(12, 54);
             this.groupBox1.Name = "groupBox1";
             this.groupBox1.Size = new System.Drawing.Size(198, 157);
             this.groupBox1.TabIndex = 17;
@@ -174,6 +177,8 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.Controls.Add(this.label7);
+            this.groupBox4.Controls.Add(this.textBox6);
             this.groupBox4.Controls.Add(this.label11);
             this.groupBox4.Controls.Add(this.label18);
             this.groupBox4.Controls.Add(this.label12);
@@ -186,9 +191,9 @@
             this.groupBox4.Controls.Add(this.button7);
             this.groupBox4.Controls.Add(this.dateTimePicker3);
             this.groupBox4.Controls.Add(this.textBox4);
-            this.groupBox4.Location = new System.Drawing.Point(12, 222);
+            this.groupBox4.Location = new System.Drawing.Point(12, 210);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(198, 216);
+            this.groupBox4.Size = new System.Drawing.Size(198, 228);
             this.groupBox4.TabIndex = 19;
             this.groupBox4.TabStop = false;
             // 
@@ -196,7 +201,7 @@
             // 
             this.label11.AutoSize = true;
             this.label11.Font = new System.Drawing.Font("Microsoft Sans Serif", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label11.Location = new System.Drawing.Point(8, 157);
+            this.label11.Location = new System.Drawing.Point(10, 180);
             this.label11.Name = "label11";
             this.label11.Size = new System.Drawing.Size(51, 16);
             this.label11.TabIndex = 19;
@@ -276,7 +281,7 @@
             // button1
             // 
             this.button1.AllowDrop = true;
-            this.button1.Location = new System.Drawing.Point(97, 182);
+            this.button1.Location = new System.Drawing.Point(97, 199);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(75, 23);
             this.button1.TabIndex = 9;
@@ -286,7 +291,7 @@
             // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(11, 182);
+            this.button7.Location = new System.Drawing.Point(11, 199);
             this.button7.Name = "button7";
             this.button7.Size = new System.Drawing.Size(75, 23);
             this.button7.TabIndex = 8;
@@ -336,6 +341,7 @@
             this.dataGridView2.Size = new System.Drawing.Size(529, 201);
             this.dataGridView2.TabIndex = 22;
             this.dataGridView2.CellMouseUp += new System.Windows.Forms.DataGridViewCellMouseEventHandler(this.dataGridView2_CellMouseUp);
+            this.dataGridView2.CellValueChanged += new System.Windows.Forms.DataGridViewCellEventHandler(this.dataGridView2_CellValueChanged);
             // 
             // contextMenuStrip2
             // 
@@ -368,6 +374,23 @@
             this.label6.Size = new System.Drawing.Size(42, 29);
             this.label6.TabIndex = 25;
             this.label6.Text = "Søg";
+            // 
+            // textBox6
+            // 
+            this.textBox6.Location = new System.Drawing.Point(91, 156);
+            this.textBox6.Name = "textBox6";
+            this.textBox6.Size = new System.Drawing.Size(81, 20);
+            this.textBox6.TabIndex = 20;
+            // 
+            // label7
+            // 
+            this.label7.AutoSize = true;
+            this.label7.Font = new System.Drawing.Font("Myanmar Text", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label7.Location = new System.Drawing.Point(6, 153);
+            this.label7.Name = "label7";
+            this.label7.Size = new System.Drawing.Size(38, 29);
+            this.label7.TabIndex = 21;
+            this.label7.Text = "Km";
             // 
             // Form2
             // 
@@ -428,5 +451,7 @@
         private System.Windows.Forms.ToolStripMenuItem sletKørelogToolStripMenuItem;
         private System.Windows.Forms.TextBox textBox3;
         private System.Windows.Forms.Label label6;
+        private System.Windows.Forms.Label label7;
+        private System.Windows.Forms.TextBox textBox6;
     }
 }

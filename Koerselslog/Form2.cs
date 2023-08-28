@@ -9,14 +9,15 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Data.Sql;
 using System.Data.SqlClient;
+using System.Diagnostics;
 
 namespace Koerselslog
 {
     /*To do
-     * Tilføj redigering af bruger og kørselslog
      * Fix delay på beskeder når de skal fjernes
      * Tilføje så man også kan søge efter id'er i søgefunktionen
      * tilføje så man kan se flere navne i dropdown
+     * tilføje kommentare
      */
     public partial class Form2 : Form
     {
@@ -49,12 +50,18 @@ namespace Koerselslog
         public void fillDrivingLogData()
         {
             drivinglogDT.Clear();
-            SqlDataAdapter da = new SqlDataAdapter("select [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[date], [driving_logs].[user_id] from [dbo].[driving_logs] inner join [dbo].[users] on [users].[id]=[driving_logs].[user_id] where [driving_logs].[disabled]='false' or [driving_logs].[disabled]='0'", Program.connectionString);
+            SqlDataAdapter da = new SqlDataAdapter("select [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[distance], [driving_logs].[date], [driving_logs].[user_id] from [dbo].[driving_logs] inner join [dbo].[users] on [users].[id]=[driving_logs].[user_id] where [driving_logs].[disabled]='false' or [driving_logs].[disabled]='0'", Program.connectionString);
             da.Fill(drivinglogDT);
             dataGridView2.DataSource = drivinglogDT;
 
-            dataGridView2.Columns[0].ReadOnly = true;
-            dataGridView2.Columns[2].ReadOnly = true;
+            for (int i = 0; i < 7; i++)
+            {
+                if (i != 3 && i != 4)
+                {
+                    dataGridView2.Columns[i].ReadOnly = true;
+                }
+            }
+
         }
 
         private void Form2_Load(object sender, EventArgs e)
@@ -63,10 +70,13 @@ namespace Koerselslog
             fillDrivingLogData();
             updateComboBox(comboBox3, api.getNames());
         }
+        //Viser contextmenu ved højreklik
         private void dataGridView1_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
+            //Tjekker om det er højreklik
             if (e.Button == MouseButtons.Right)
             {
+                //Viser contextmenu og sætter index nummeret
                 Index = 0;
                 this.dataGridView1.Rows[e.RowIndex].Selected = true;
                 this.Index = e.RowIndex;
@@ -75,27 +85,34 @@ namespace Koerselslog
                 contextMenuStrip1.Show(Cursor.Position);
             }
         }
-
+        //Sletter brugeren ved klik på contextmenu
         private void contextMenuStrip1_Click(object sender, EventArgs e)
         {
+            //Viser dialogboksen
             DialogResult dr = MessageBox.Show("Er du sikker på du vil slette brugeren", "Slet af brugeren", MessageBoxButtons.YesNo);
+            //Tjekker om resultatet er ja
             if (dr == DialogResult.Yes)
             {
+                //Parser id til int
                 int id = int.Parse(dataGridView1.Rows[Index].Cells[0].Value.ToString());
+                //Tjekker om brugeren blev slettet og opddatere datagridview1
                 if (api.deleteUser(id) == 1)
                 {
                     fillUserData();
                 }
+                //Brugeren blev ikke fundet i databasen
                 else
                 {
                     MessageBox.Show("Der er sket en fejl. Prøv igen");
                 }
             }
         }
-
+        //Opret bruger knappen ved klik
         private void button2_Click(object sender, EventArgs e)
         {
+            //Initialisere variabler
             string errorMessage = "";
+            //Tjek om tekst felterne opfylder kravene
             if (textBox1.TextLength <= 0)
             {
                 errorMessage = "Du skal skrive et navn";
@@ -108,7 +125,7 @@ namespace Koerselslog
             {
                 errorMessage = "Din nummerplade er for lang";
             }
-
+            //Fejl besked - Gør label4 synlig, sætter farven til rød og skriver tekst
             if (errorMessage != "")
             {
                 label4.Visible = true;
@@ -118,15 +135,21 @@ namespace Koerselslog
                 label4.Visible = false;
                 return;
             }
+            //Success besked - Gøre label4 synlig, sætter farven til grøn og skriver tekst
             label4.Visible = true;
             label4.ForeColor = Color.LightGreen;
             label4.Text = "Bruger oprettet";
-            new Crud().saveUser(new User(textBox1.Text, textBox2.Text, DateTime.Now.ToString()));
+            //Gemme brugeren i databasen
+            api.saveUser(new User(textBox1.Text, textBox2.Text, DateTime.Now.ToString()));
+            //Rydde tekst felterne
             textBox1.Clear();
             textBox2.Clear();
+            //Opdatere combobox til det nyeste data
             updateComboBox(comboBox3, api.getNames());
+            //Opdatere datagridview1 med nyeste data
             fillUserData();
-            Task.Delay(3000).Wait();
+            //Delay for at gøre beskeden usynlig igen
+            Task.Delay(1000).Wait();
             label4.Visible = false;
         }
 
@@ -152,6 +175,7 @@ namespace Koerselslog
         private void button1_Click(object sender, EventArgs e)
         {
             string errorMessage = "";
+            int distance = 0;
             if (comboBox3.SelectedItem == null)
             {
                 errorMessage = "Vælg venligst en bruger!";
@@ -160,7 +184,16 @@ namespace Koerselslog
             {
                 errorMessage = "Skriv venligst en opgave";
             }
-
+            if (textBox6.TextLength > 0)
+            {
+                try
+                {
+                    int.TryParse(textBox6.Text, out distance);
+                } catch
+                {
+                    errorMessage = "Skriv veligst kun tal i km";
+                }
+            }
             if (errorMessage != "")
             {
                 label11.Visible = true;
@@ -185,10 +218,11 @@ namespace Koerselslog
                 return;
             }
 
-            api.createDrivingLog(id, textBox5.Text, dateTimePicker3.Value.ToString());
+            api.createDrivingLog(id, textBox5.Text, distance, dateTimePicker3.Value.ToString());
             label11.Text = "Opgave oprettet!";
             comboBox3.SelectedItem = null;
             dateTimePicker3.Value = DateTime.Now;
+            textBox6.Clear();
             textBox5.Clear();
             textBox4.Clear();
             fillDrivingLogData();
@@ -237,6 +271,7 @@ namespace Koerselslog
         {
             textBox4.Clear();
             textBox5.Clear();
+            textBox6.Clear();
             dateTimePicker3.Value = DateTime.Now;
             comboBox3.SelectedItem = null;
 
@@ -249,6 +284,46 @@ namespace Koerselslog
 
             DataView drivinglog_search = drivinglogDT.DefaultView;
             drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%'";
+        }
+
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        { 
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
+            string queryString = $"update [dbo].[users] set {columnName}=@updatedData where id=@id;";
+            using (SqlConnection connection = new SqlConnection(
+                      Program.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(
+                    queryString, connection);
+                command.Parameters.AddWithValue("@updatedData", dataGridView1.CurrentCell.Value);
+                command.Parameters.AddWithValue("@id", dataGridView1.Rows[e.RowIndex].Cells[0].Value);
+
+
+                command.ExecuteNonQuery();
+                connection.Close();
+                fillUserData();
+            }
+        }
+
+        private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            string columnName = dataGridView2.Columns[e.ColumnIndex].Name;
+            string queryString = $"update [dbo].[driving_logs] set {columnName}=@updatedData where id=@id;";
+            using (SqlConnection connection = new SqlConnection(
+                      Program.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(
+                    queryString, connection);
+                command.Parameters.AddWithValue("@updatedData", dataGridView2.CurrentCell.Value);
+                command.Parameters.AddWithValue("@id", dataGridView2.Rows[e.RowIndex].Cells[0].Value);
+
+
+                command.ExecuteNonQuery();
+                connection.Close();
+                fillDrivingLogData();
+            }
         }
     }
 }
