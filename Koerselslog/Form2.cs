@@ -18,6 +18,7 @@ namespace Koerselslog
      * Tilføje så man også kan søge efter id'er i søgefunktionen
      * tilføje så man kan se flere navne i dropdown
      * tilføje kommentare
+     * fjerne sql connection string fra program.cs
      */
     public partial class Form2 : Form
     {
@@ -36,7 +37,7 @@ namespace Koerselslog
             foreach (string item in items) combo.Items.Add(item);
 
         }
-
+        //Fylder datagridview1 ud med data fra databasen
         public void fillUserData()
         {
             usersDT.Clear();
@@ -46,7 +47,7 @@ namespace Koerselslog
 
             dataGridView1.Columns[0].ReadOnly = true;
         }
-
+        //Fylder datagridview2 ud med data fra databasen
         public void fillDrivingLogData()
         {
             drivinglogDT.Clear();
@@ -63,7 +64,7 @@ namespace Koerselslog
             }
 
         }
-
+        //Loader form2
         private void Form2_Load(object sender, EventArgs e)
         {
             fillUserData();
@@ -243,7 +244,7 @@ namespace Koerselslog
                 contextMenuStrip2.Show(Cursor.Position);
             }
         }
-
+        //Contextmenu til sletning af kørelog i datagridview2
         private void contextMenuStrip2_Click(object sender, EventArgs e)
         {
             DialogResult dr = MessageBox.Show("Er du sikker på du vil slette køreloggen", "Slet kørelog", MessageBoxButtons.YesNo);
@@ -261,12 +262,13 @@ namespace Koerselslog
             }
         }
 
+        //Annullere oprettelsen af bruger og rydder tekstfelterne
         private void annuller_opret_Click(object sender, EventArgs e)
         {
             textBox1.Clear();
             textBox2.Clear();
         }
-
+        //Annullere oprettelse af kørelog og rydder tekstfelterne
         private void button7_Click(object sender, EventArgs e)
         {
             textBox4.Clear();
@@ -276,7 +278,7 @@ namespace Koerselslog
             comboBox3.SelectedItem = null;
 
         }
-
+        //Søger efter det indtastede i både datagridview1 og datagridview2
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
             DataView users_search = usersDT.DefaultView;
@@ -285,11 +287,13 @@ namespace Koerselslog
             DataView drivinglog_search = drivinglogDT.DefaultView;
             drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%'";
         }
-
+        //Opdatere databasen ved ændring i datagridview1
         private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-        { 
+        {
+            //Initialisere variabler
             string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
             string queryString = $"update [dbo].[users] set {columnName}=@updatedData where id=@id;";
+            //Starter sql connection
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
@@ -299,17 +303,21 @@ namespace Koerselslog
                 command.Parameters.AddWithValue("@updatedData", dataGridView1.CurrentCell.Value);
                 command.Parameters.AddWithValue("@id", dataGridView1.Rows[e.RowIndex].Cells[0].Value);
 
-
+                //Executer sql command
                 command.ExecuteNonQuery();
+                //Lukker connection
                 connection.Close();
+                //Opdatere datagridview2 med nyeste data
                 fillUserData();
             }
         }
-
+        //Opdatere databasen ved ændring i datagridview2
         private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
+            //Initialisere variabler
             string columnName = dataGridView2.Columns[e.ColumnIndex].Name;
             string queryString = $"update [dbo].[driving_logs] set {columnName}=@updatedData where id=@id;";
+            //Starter sql connection
             using (SqlConnection connection = new SqlConnection(
                       Program.connectionString))
             {
@@ -319,9 +327,11 @@ namespace Koerselslog
                 command.Parameters.AddWithValue("@updatedData", dataGridView2.CurrentCell.Value);
                 command.Parameters.AddWithValue("@id", dataGridView2.Rows[e.RowIndex].Cells[0].Value);
 
-
+                //Executer sql command
                 command.ExecuteNonQuery();
+                //Lukker connection
                 connection.Close();
+                //Opdatere datagridview2 med nyeste data
                 fillDrivingLogData();
             }
         }
