@@ -19,6 +19,7 @@ namespace Koerselslog
      * tilføje så man kan se flere navne i dropdown
      * tilføje kommentare
      * fjerne sql connection string fra program.cs
+     * fejl når man klikker på coloumn
      */
     public partial class Form2 : Form
     {
@@ -70,6 +71,7 @@ namespace Koerselslog
             fillUserData();
             fillDrivingLogData();
             updateComboBox(comboBox3, api.getNames());
+
         }
         //Viser contextmenu ved højreklik
         private void dataGridView1_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
@@ -100,6 +102,7 @@ namespace Koerselslog
                 if (api.deleteUser(id) == 1)
                 {
                     fillUserData();
+                    updateComboBox(comboBox3, api.getNames());
                 }
                 //Brugeren blev ikke fundet i databasen
                 else
@@ -177,23 +180,12 @@ namespace Koerselslog
         {
             string errorMessage = "";
             int distance = 0;
-            if (comboBox3.SelectedItem == null)
-            {
-                errorMessage = "Vælg venligst en bruger!";
-            }
-            else if (textBox5.TextLength <= 0)
-            {
-                errorMessage = "Skriv venligst en opgave";
-            }
+            if (comboBox3.SelectedItem == null) errorMessage = "Vælg venligst en bruger!";
+            else if (textBox5.TextLength <= 0) errorMessage = "Skriv venligst en opgave"; 
             if (textBox6.TextLength > 0)
             {
-                try
-                {
-                    int.TryParse(textBox6.Text, out distance);
-                } catch
-                {
-                    errorMessage = "Skriv veligst kun tal i km";
-                }
+                if (!int.TryParse(textBox6.Text, out distance)) errorMessage = "Skriv veligst kun tal i km";
+
             }
             if (errorMessage != "")
             {
@@ -261,7 +253,6 @@ namespace Koerselslog
                 }
             }
         }
-
         //Annullere oprettelsen af bruger og rydder tekstfelterne
         private void annuller_opret_Click(object sender, EventArgs e)
         {
