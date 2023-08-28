@@ -1,6 +1,6 @@
 ﻿namespace Koerselslog
 {
-    partial class Form2
+    partial class drivinglog
     {
         /// <summary>
         /// Required designer variable.

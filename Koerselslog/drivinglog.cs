@@ -21,13 +21,13 @@ namespace Koerselslog
      * fjerne sql connection string fra program.cs
      * fejl når man klikker på coloumn
      */
-    public partial class Form2 : Form
+    public partial class drivinglog : Form
     {
         int Index = 0;
         private Crud api = new Crud();
         DataTable drivinglogDT = new DataTable();
         DataTable usersDT = new DataTable();
-        public Form2()
+        public drivinglog()
         {
             InitializeComponent();
         }
