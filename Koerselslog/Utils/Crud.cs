@@ -24,7 +24,6 @@ namespace Koerselslog
                 command.Parameters.AddWithValue("@licensePlate", user.LicensePlate);
                 command.Parameters.AddWithValue("@date", user.Date);
 
-
                 command.ExecuteNonQuery();
                 connection.Close();
             }
