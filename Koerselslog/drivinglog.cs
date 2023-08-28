@@ -18,8 +18,9 @@ namespace Koerselslog
      * Tilføje så man også kan søge efter id'er i søgefunktionen
      * tilføje så man kan se flere navne i dropdown
      * tilføje kommentare
-     * fjerne sql connection string fra program.cs
      * fejl når man klikker på coloumn
+     * automatisk oprettelse af database
+     * database informationer gemt i konfigurations fil
      */
     public partial class drivinglog : Form
     {
