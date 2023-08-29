@@ -20,6 +20,11 @@ namespace Koerselslog
         DataTable drivinglogDT = new DataTable();
         DataTable usersDT = new DataTable();
 
+        /* To do
+         * Gøre så man kan søge efter id
+         * input validering
+         */
+
         public drivinglog()
         {
             InitializeComponent();
@@ -39,10 +44,13 @@ namespace Koerselslog
             label.ForeColor = color;
             label.Visible = true;
 
-            await Task.Run(async () =>
+
+            await Task.Delay(duration);
+
+            /*await Task.Run(async () =>
             {
                 await Task.Delay(duration);
-            });
+            });*/
 
             label.Visible = false;
         }
@@ -131,30 +139,22 @@ namespace Koerselslog
             // Check if text fields meet requirements
             if (textBox1.TextLength <= 0)
             {
-                errorMessage = "Du skal skrive et navn";
+                ShowAndHideMessage(label4, "Du skal skrive et navn", Color.Red, 3000);
+                return;
             }
             if (textBox2.TextLength <= 0)
             {
-                errorMessage = "Du skal skrive en nummerplade";
+                ShowAndHideMessage(label4, "Du skal skrive en nummerplade", Color.Red, 3000);
+                return;
             }
             if (textBox2.TextLength > 7)
             {
-                errorMessage = "Din nummerplade er for lang";
-            }
-
-            // Display error message in label4 and handle visibility
-            if (errorMessage != "")
-            {
-                label4.Visible = true;
-                label4.ForeColor = Color.Red;
-                label4.Text = errorMessage;
-                //Task.Delay(3000).Wait();
-                label4.Visible = false;
+                ShowAndHideMessage(label4, "Nummerpladen er for lang", Color.Red, 3000);
                 return;
             }
 
             // Display success message in label4
-            ShowAndHideMessage(label4, "Bruger oprettet", Color.LightGreen, 3000); // Viser i 1 sekund
+            ShowAndHideMessage(label4, "Bruger oprettet", Color.LightGreen, 3000); // Viser i 3 sekund
 
 
             // Save user to the database
@@ -198,33 +198,31 @@ namespace Koerselslog
         // Handle the "Create Log" button click event
         private void button1_Click(object sender, EventArgs e)
         {
-            string errorMessage = "";
             int distance = 0;
 
             if (comboBox3.SelectedItem == null)
-                errorMessage = "Vælg venligst en bruger!";
-            else if (textBox5.TextLength <= 0)
-                errorMessage = "Skriv venligst en opgave";
+            {
+                ShowAndHideMessage(label11, "Vælg venligst en bruger", Color.Red, 3000);
+                return;
 
+            }
+            if (textBox5.TextLength <= 0)
+            {
+                ShowAndHideMessage(label11, "Skriv venligst en opgave", Color.Red, 3000);
+                return;
+            }
             if (textBox6.TextLength > 0)
             {
                 if (!int.TryParse(textBox6.Text, out distance))
-                    errorMessage = "Skriv venligst kun tal i km";
+                {
+                    ShowAndHideMessage(label11, "Km kan kun være tal", Color.Red, 3000);
+                    return;
+                }
+                    
+                
             }
 
-            if (errorMessage != "")
-            {
-                label11.Visible = true;
-                label11.ForeColor = Color.Red;
-                label11.Text = errorMessage;
-                Task.Delay(3000).Wait();
-                label11.Visible = false;
-                return;
-            }
 
-            // Display success message and handle the creation of a driving log
-            label11.Visible = true;
-            label11.ForeColor = Color.LightGreen;
 
             // Extract user ID from the selected ComboBox item
             string[] name = comboBox3.SelectedItem.ToString().Split('|');
@@ -241,7 +239,7 @@ namespace Koerselslog
 
             // Create a new driving log entry
             dataManager.createDrivingLog(id, textBox5.Text, distance, dateTimePicker3.Value.ToString());
-            label11.Text = "Opgave oprettet!";
+            ShowAndHideMessage(label11, "Opgave oprettet", Color.LightGreen, 3000);
 
             // Clear fields and update DataGridView
             comboBox3.SelectedItem = null;
@@ -250,10 +248,6 @@ namespace Koerselslog
             textBox5.Clear();
             textBox4.Clear();
             fillDrivingLogData();
-
-            // Delay and hide the success message
-            Task.Delay(3000).Wait();
-            label11.Visible = false;
         }
 
         // Handle right-click context menu for dataGridView2
