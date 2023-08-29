@@ -11,16 +11,6 @@ namespace Koerselslog
 {
     internal class Crud
     {
-        // Connection string for the database
-        public string connectionString = @"Data Source=192.168.16.147,1433;Database=drivinglog;User Id=root;Password=Adm1n123;";
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-
-namespace Koerselslog
-{
-    internal class Crud
-    {
         public string connectionString = @"Data Source=192.168.16.147,1433;Initial Catalog=drivinglog;User Id=root;Password=Adm1n123;";
 
         // Constructor: Initialize database and tables if they don't exist
