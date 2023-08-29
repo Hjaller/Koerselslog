@@ -29,6 +29,7 @@
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(drivinglog));
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.label4 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
@@ -73,6 +74,7 @@
             // 
             // groupBox1
             // 
+            this.groupBox1.BackColor = System.Drawing.Color.Transparent;
             this.groupBox1.Controls.Add(this.label4);
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Controls.Add(this.textBox2);
@@ -164,6 +166,7 @@
             // 
             // groupBox4
             // 
+            this.groupBox4.BackColor = System.Drawing.Color.Transparent;
             this.groupBox4.Controls.Add(this.panel1);
             this.groupBox4.Controls.Add(this.label7);
             this.groupBox4.Controls.Add(this.textBox6);
@@ -178,9 +181,9 @@
             this.groupBox4.Controls.Add(this.button7);
             this.groupBox4.Controls.Add(this.dateTimePicker3);
             this.groupBox4.Controls.Add(this.textBox4);
-            this.groupBox4.Location = new System.Drawing.Point(12, 210);
+            this.groupBox4.Location = new System.Drawing.Point(12, 212);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(198, 228);
+            this.groupBox4.Size = new System.Drawing.Size(198, 226);
             this.groupBox4.TabIndex = 19;
             this.groupBox4.TabStop = false;
             // 
@@ -413,6 +416,7 @@
             this.Controls.Add(this.groupBox1);
             this.Controls.Add(this.dataGridView1);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "drivinglog";
