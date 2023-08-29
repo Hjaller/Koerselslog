@@ -40,6 +40,8 @@
             this.label1 = new System.Windows.Forms.Label();
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.groupBox4 = new System.Windows.Forms.GroupBox();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.label7 = new System.Windows.Forms.Label();
             this.textBox6 = new System.Windows.Forms.TextBox();
             this.label11 = new System.Windows.Forms.Label();
@@ -49,7 +51,6 @@
             this.label16 = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
             this.textBox5 = new System.Windows.Forms.TextBox();
-            this.comboBox3 = new System.Windows.Forms.ComboBox();
             this.button1 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.dateTimePicker3 = new System.Windows.Forms.DateTimePicker();
@@ -61,14 +62,13 @@
             this.sletKørelogToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.textBox3 = new System.Windows.Forms.TextBox();
             this.label6 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
             this.dataGridView1 = new System.Windows.Forms.DataGridView();
             this.groupBox1.SuspendLayout();
             this.groupBox4.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.contextMenuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).BeginInit();
             this.contextMenuStrip2.SuspendLayout();
-            this.panel1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -187,6 +187,27 @@
             this.groupBox4.TabIndex = 19;
             this.groupBox4.TabStop = false;
             // 
+            // panel1
+            // 
+            this.panel1.Controls.Add(this.comboBox3);
+            this.panel1.Location = new System.Drawing.Point(91, 50);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(81, 23);
+            this.panel1.TabIndex = 22;
+            // 
+            // comboBox3
+            // 
+            this.comboBox3.DropDownHeight = 150;
+            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBox3.FormattingEnabled = true;
+            this.comboBox3.IntegralHeight = false;
+            this.comboBox3.Location = new System.Drawing.Point(0, 2);
+            this.comboBox3.MaxDropDownItems = 20;
+            this.comboBox3.Name = "comboBox3";
+            this.comboBox3.Size = new System.Drawing.Size(81, 21);
+            this.comboBox3.TabIndex = 11;
+            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
+            // 
             // label7
             // 
             this.label7.AutoSize = true;
@@ -271,19 +292,6 @@
             this.textBox5.Name = "textBox5";
             this.textBox5.Size = new System.Drawing.Size(81, 20);
             this.textBox5.TabIndex = 13;
-            // 
-            // comboBox3
-            // 
-            this.comboBox3.DropDownHeight = 150;
-            this.comboBox3.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBox3.FormattingEnabled = true;
-            this.comboBox3.IntegralHeight = false;
-            this.comboBox3.Location = new System.Drawing.Point(0, 2);
-            this.comboBox3.MaxDropDownItems = 20;
-            this.comboBox3.Name = "comboBox3";
-            this.comboBox3.Size = new System.Drawing.Size(81, 21);
-            this.comboBox3.TabIndex = 11;
-            this.comboBox3.SelectedIndexChanged += new System.EventHandler(this.comboBox3_SelectedIndexChanged);
             // 
             // button1
             // 
@@ -382,14 +390,6 @@
             this.label6.TabIndex = 25;
             this.label6.Text = "Søg";
             // 
-            // panel1
-            // 
-            this.panel1.Controls.Add(this.comboBox3);
-            this.panel1.Location = new System.Drawing.Point(91, 50);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(81, 23);
-            this.panel1.TabIndex = 22;
-            // 
             // dataGridView1
             // 
             this.dataGridView1.AllowUserToAddRows = false;
@@ -427,10 +427,10 @@
             this.groupBox1.PerformLayout();
             this.groupBox4.ResumeLayout(false);
             this.groupBox4.PerformLayout();
+            this.panel1.ResumeLayout(false);
             this.contextMenuStrip1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.contextMenuStrip2.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
