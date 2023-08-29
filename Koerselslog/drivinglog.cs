@@ -154,193 +154,188 @@ namespace Koerselslog
             Task.Delay(1000).Wait();
             label4.Visible = false;
         }
-
-        // Other event handlers and methods...
-    }
-}
-// Handle the ComboBox's selected index change event
-private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
-{
-    if (comboBox3.SelectedItem != null && comboBox3.SelectedItem.ToString().Contains("|"))
-    {
-        // Split the selected item to extract ID
-        string[] name = comboBox3.SelectedItem.ToString().Split('|');
-        int id;
-
-        try
+        // Handle the ComboBox's selected index change event
+        private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
         {
-            int.TryParse(name[1], out id);
+            if (comboBox3.SelectedItem != null && comboBox3.SelectedItem.ToString().Contains("|"))
+            {
+                // Split the selected item to extract ID
+                string[] name = comboBox3.SelectedItem.ToString().Split('|');
+                int id;
+
+                try
+                {
+                    int.TryParse(name[1], out id);
+                }
+                catch
+                {
+                    return;
+                }
+
+                // Get and display the license plate associated with the ID
+                textBox4.Text = new Crud().getLicensePlateFromId(id);
+            }
         }
-        catch
+
+        // Handle the "Create Log" button click event
+        private void button1_Click(object sender, EventArgs e)
         {
-            return;
-        }
+            string errorMessage = "";
+            int distance = 0;
 
-        // Get and display the license plate associated with the ID
-        textBox4.Text = new Crud().getLicensePlateFromId(id);
-    }
-}
+            if (comboBox3.SelectedItem == null)
+                errorMessage = "Vælg venligst en bruger!";
+            else if (textBox5.TextLength <= 0)
+                errorMessage = "Skriv venligst en opgave";
 
-// Handle the "Create Log" button click event
-private void button1_Click(object sender, EventArgs e)
-{
-    string errorMessage = "";
-    int distance = 0;
+            if (textBox6.TextLength > 0)
+            {
+                if (!int.TryParse(textBox6.Text, out distance))
+                    errorMessage = "Skriv venligst kun tal i km";
+            }
 
-    if (comboBox3.SelectedItem == null)
-        errorMessage = "Vælg venligst en bruger!";
-    else if (textBox5.TextLength <= 0)
-        errorMessage = "Skriv venligst en opgave"; 
+            if (errorMessage != "")
+            {
+                label11.Visible = true;
+                label11.ForeColor = Color.Red;
+                label11.Text = errorMessage;
+                Task.Delay(3000).Wait();
+                label11.Visible = false;
+                return;
+            }
 
-    if (textBox6.TextLength > 0)
-    {
-        if (!int.TryParse(textBox6.Text, out distance))
-            errorMessage = "Skriv venligst kun tal i km";
-    }
+            // Display success message and handle the creation of a driving log
+            label11.Visible = true;
+            label11.ForeColor = Color.LightGreen;
 
-    if (errorMessage != "")
-    {
-        label11.Visible = true;
-        label11.ForeColor = Color.Red;
-        label11.Text = errorMessage;
-        Task.Delay(3000).Wait();
-        label11.Visible = false;
-        return;
-    }
+            // Extract user ID from the selected ComboBox item
+            string[] name = comboBox3.SelectedItem.ToString().Split('|');
+            int id;
 
-    // Display success message and handle the creation of a driving log
-    label11.Visible = true;
-    label11.ForeColor = Color.LightGreen;
+            try
+            {
+                int.TryParse(name[1], out id);
+            }
+            catch
+            {
+                return;
+            }
 
-    // Extract user ID from the selected ComboBox item
-    string[] name = comboBox3.SelectedItem.ToString().Split('|');
-    int id;
+            // Create a new driving log entry
+            api.createDrivingLog(id, textBox5.Text, distance, dateTimePicker3.Value.ToString());
+            label11.Text = "Opgave oprettet!";
 
-    try
-    {
-        int.TryParse(name[1], out id);
-    }
-    catch
-    {
-        return;
-    }
-
-    // Create a new driving log entry
-    api.createDrivingLog(id, textBox5.Text, distance, dateTimePicker3.Value.ToString());
-    label11.Text = "Opgave oprettet!";
-    
-    // Clear fields and update DataGridView
-    comboBox3.SelectedItem = null;
-    dateTimePicker3.Value = DateTime.Now;
-    textBox6.Clear();
-    textBox5.Clear();
-    textBox4.Clear();
-    fillDrivingLogData();
-    
-    // Delay and hide the success message
-    Task.Delay(3000).Wait();
-    label11.Visible = false;
-}
-
-// Handle right-click context menu for dataGridView2
-private void dataGridView2_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
-{
-    if (e.Button == MouseButtons.Right)
-    {
-        Index = 0;
-        this.dataGridView2.Rows[e.RowIndex].Selected = true;
-        this.Index = e.RowIndex;
-        this.dataGridView2.CurrentCell = this.dataGridView2.Rows[e.RowIndex].Cells[1];
-        this.contextMenuStrip2.Show(this.dataGridView2, e.Location);
-        contextMenuStrip2.Show(Cursor.Position);
-    }
-}
-
-// Handle context menu click to delete a driving log
-private void contextMenuStrip2_Click(object sender, EventArgs e)
-{
-    DialogResult dr = MessageBox.Show("Er du sikker på du vil slette køreloggen", "Slet kørelog", MessageBoxButtons.YesNo);
-
-    if (dr == DialogResult.Yes)
-    {
-        int id = int.Parse(dataGridView2.Rows[Index].Cells[0].Value.ToString());
-
-        if (api.deleteDrivingLog(id) == 1)
-        {
+            // Clear fields and update DataGridView
+            comboBox3.SelectedItem = null;
+            dateTimePicker3.Value = DateTime.Now;
+            textBox6.Clear();
+            textBox5.Clear();
+            textBox4.Clear();
             fillDrivingLogData();
+
+            // Delay and hide the success message
+            Task.Delay(3000).Wait();
+            label11.Visible = false;
         }
-        else
+
+        // Handle right-click context menu for dataGridView2
+        private void dataGridView2_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            MessageBox.Show("Der er sket en fejl. Prøv igen");
+            if (e.Button == MouseButtons.Right)
+            {
+                Index = 0;
+                this.dataGridView2.Rows[e.RowIndex].Selected = true;
+                this.Index = e.RowIndex;
+                this.dataGridView2.CurrentCell = this.dataGridView2.Rows[e.RowIndex].Cells[1];
+                this.contextMenuStrip2.Show(this.dataGridView2, e.Location);
+                contextMenuStrip2.Show(Cursor.Position);
+            }
+        }
+
+        // Handle context menu click to delete a driving log
+        private void contextMenuStrip2_Click(object sender, EventArgs e)
+        {
+            DialogResult dr = MessageBox.Show("Er du sikker på du vil slette køreloggen", "Slet kørelog", MessageBoxButtons.YesNo);
+
+            if (dr == DialogResult.Yes)
+            {
+                int id = int.Parse(dataGridView2.Rows[Index].Cells[0].Value.ToString());
+
+                if (api.deleteDrivingLog(id) == 1)
+                {
+                    fillDrivingLogData();
+                }
+                else
+                {
+                    MessageBox.Show("Der er sket en fejl. Prøv igen");
+                }
+            }
+        }
+
+        // Handle cancel button click to clear user creation fields
+        private void annuller_opret_Click(object sender, EventArgs e)
+        {
+            textBox1.Clear();
+            textBox2.Clear();
+        }
+
+        // Handle cancel button click to clear driving log creation fields
+        private void button7_Click(object sender, EventArgs e)
+        {
+            textBox4.Clear();
+            textBox5.Clear();
+            textBox6.Clear();
+            dateTimePicker3.Value = DateTime.Now;
+            comboBox3.SelectedItem = null;
+        }
+
+        // Search for data in both DataGridViews based on entered text
+        private void textBox3_TextChanged(object sender, EventArgs e)
+        {
+            DataView users_search = usersDT.DefaultView;
+            users_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%'";
+
+            DataView drivinglog_search = drivinglogDT.DefaultView;
+            drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%'";
+        }
+
+        // Handle cell value change in dataGridView1 to update database
+        private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
+            string queryString = $"update [dbo].[users] set {columnName}=@updatedData where id=@id;";
+
+            using (SqlConnection connection = new SqlConnection(api.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@updatedData", dataGridView1.CurrentCell.Value);
+                command.Parameters.AddWithValue("@id", dataGridView1.Rows[e.RowIndex].Cells[0].Value);
+
+                command.ExecuteNonQuery();
+                connection.Close();
+                fillUserData();
+            }
+        }
+
+        // Handle cell value change in dataGridView2 to update database
+        private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
+        {
+            string columnName = dataGridView2.Columns[e.ColumnIndex].Name;
+            string queryString = $"update [dbo].[driving_logs] set {columnName}=@updatedData where id=@id;";
+
+            using (SqlConnection connection = new SqlConnection(api.connectionString))
+            {
+                connection.Open();
+                SqlCommand command = new SqlCommand(queryString, connection);
+                command.Parameters.AddWithValue("@updatedData", dataGridView2.CurrentCell.Value);
+                command.Parameters.AddWithValue("@id", dataGridView2.Rows[e.RowIndex].Cells[0].Value);
+
+                command.ExecuteNonQuery();
+                connection.Close();
+                fillDrivingLogData();
+            }
         }
     }
 }
-
-// Handle cancel button click to clear user creation fields
-private void annuller_opret_Click(object sender, EventArgs e)
-{
-    textBox1.Clear();
-    textBox2.Clear();
-}
-
-// Handle cancel button click to clear driving log creation fields
-private void button7_Click(object sender, EventArgs e)
-{
-    textBox4.Clear();
-    textBox5.Clear();
-    textBox6.Clear();
-    dateTimePicker3.Value = DateTime.Now;
-    comboBox3.SelectedItem = null;
-}
-
-// Search for data in both DataGridViews based on entered text
-private void textBox3_TextChanged(object sender, EventArgs e)
-{
-    DataView users_search = usersDT.DefaultView;
-    users_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%'";
-
-    DataView drivinglog_search = drivinglogDT.DefaultView;
-    drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%'";
-}
-
-// Handle cell value change in dataGridView1 to update database
-private void dataGridView1_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-{
-    string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
-    string queryString = $"update [dbo].[users] set {columnName}=@updatedData where id=@id;";
-
-    using (SqlConnection connection = new SqlConnection(api.connectionString))
-    {
-        connection.Open();
-        SqlCommand command = new SqlCommand(queryString, connection);
-        command.Parameters.AddWithValue("@updatedData", dataGridView1.CurrentCell.Value);
-        command.Parameters.AddWithValue("@id", dataGridView1.Rows[e.RowIndex].Cells[0].Value);
-
-        command.ExecuteNonQuery();
-        connection.Close();
-        fillUserData();
-    }
-}
-
-// Handle cell value change in dataGridView2 to update database
-private void dataGridView2_CellValueChanged(object sender, DataGridViewCellEventArgs e)
-{
-    string columnName = dataGridView2.Columns[e.ColumnIndex].Name;
-    string queryString = $"update [dbo].[driving_logs] set {columnName}=@updatedData where id=@id;";
-
-    using (SqlConnection connection = new SqlConnection(api.connectionString))
-    {
-        connection.Open();
-        SqlCommand command = new SqlCommand(queryString, connection);
-        command.Parameters.AddWithValue("@updatedData", dataGridView2.CurrentCell.Value);
-        command.Parameters.AddWithValue("@id", dataGridView2.Rows[e.RowIndex].Cells[0].Value);
-
-        command.ExecuteNonQuery();
-        connection.Close();
-        fillDrivingLogData();
-    }
-}
-
-// Other event handlers and methods...
-
-} // End of drivinglog class
+ // End of drivinglog class
