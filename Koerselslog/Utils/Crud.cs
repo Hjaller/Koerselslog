@@ -13,6 +13,68 @@ namespace Koerselslog
     {
         // Connection string for the database
         public string connectionString = @"Data Source=192.168.16.147,1433;Database=drivinglog;User Id=root;Password=Adm1n123;";
+using System;
+using System.Collections.Generic;
+using System.Data.SqlClient;
+
+namespace Koerselslog
+{
+    internal class Crud
+    {
+        public string connectionString = @"Data Source=192.168.16.147,1433;Initial Catalog=drivinglog;User Id=root;Password=Adm1n123;";
+
+        // Constructor: Initialize database and tables if they don't exist
+        public Crud()
+        {
+            InitializeDatabase();
+        }
+
+        private void InitializeDatabase()
+        {
+            using (SqlConnection connection = new SqlConnection(connectionString))
+            {
+                connection.Open();
+                
+                // Create the database if it doesn't exist
+                string createDbQuery = "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'drivinglog') CREATE DATABASE drivinglog;";
+                using (SqlCommand command = new SqlCommand(createDbQuery, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                // Create the users table if it doesn't exist
+                string createUsersTableQuery = "USE drivinglog;" +
+                                               "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'users') " +
+                                               "CREATE TABLE users (" +
+                                               "id INT PRIMARY KEY IDENTITY," +
+                                               "name NVARCHAR(50) NOT NULL," +
+                                               "licensePlate NVARCHAR(10) NOT NULL," +
+                                               "date DATETIME NOT NULL," +
+                                               "disabled BIT NOT NULL DEFAULT 0);";
+                using (SqlCommand command = new SqlCommand(createUsersTableQuery, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                // Create the driving_logs table if it doesn't exist
+                string createDrivingLogsTableQuery = "USE drivinglog;" +
+                                                     "IF NOT EXISTS (SELECT * FROM sys.tables WHERE name = 'driving_logs') " +
+                                                     "CREATE TABLE driving_logs (" +
+                                                     "id INT PRIMARY KEY IDENTITY," +
+                                                     "user_id INT NOT NULL," +
+                                                     "assignment NVARCHAR(100) NOT NULL," +
+                                                     "distance INT NOT NULL," +
+                                                     "date DATETIME NOT NULL," +
+                                                     "disabled BIT NOT NULL DEFAULT 0," +
+                                                     "FOREIGN KEY (user_id) REFERENCES users(id));";
+                using (SqlCommand command = new SqlCommand(createDrivingLogsTableQuery, connection))
+                {
+                    command.ExecuteNonQuery();
+                }
+
+                connection.Close();
+            }
+        }
 
         // Save a new user to the database
         public void saveUser(User user)
