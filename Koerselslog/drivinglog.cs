@@ -32,6 +32,21 @@ namespace Koerselslog
             foreach (string item in items) combo.Items.Add(item);
         }
 
+        private async void ShowAndHideMessage(Label label, string message, Color color, int duration)
+{
+    label.Text = message;
+    label.ForeColor = color;
+    label.Visible = true;
+
+    await Task.Delay(duration);
+
+    label.Visible = false;
+}
+
+// Eksempel på brug
+ShowAndHideMessage(label4, "Bruger oprettet", Color.LightGreen, 1000); // Viser i 1 sekund
+
+
         // Load user data from the database and populate dataGridView1
         public void fillUserData()
         {
