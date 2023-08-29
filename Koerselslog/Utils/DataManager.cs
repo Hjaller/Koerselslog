@@ -6,15 +6,16 @@ using System.Threading.Tasks;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Diagnostics;
+using System.Configuration;
 
 namespace Koerselslog
 {
-    internal class Crud
+    internal class DataManager
     {
-        public string connectionString = @"Data Source=192.168.16.147,1433;Initial Catalog=drivinglog;User Id=root;Password=Adm1n123;";
+        public string connectionString = ConfigurationManager.ConnectionStrings["connection"].ConnectionString;
 
         // Constructor: Initialize database and tables if they don't exist
-        public Crud()
+        public DataManager()
         {
             InitializeDatabase();
         }

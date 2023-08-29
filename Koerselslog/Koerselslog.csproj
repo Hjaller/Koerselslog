@@ -34,6 +34,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -53,7 +54,7 @@
       <DependentUpon>drivinglog.cs</DependentUpon>
     </Compile>
     <Compile Include="Utils\Assignments.cs" />
-    <Compile Include="Utils\Crud.cs" />
+    <Compile Include="Utils\DataManager.cs" />
     <Compile Include="Utils\User.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

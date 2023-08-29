@@ -16,7 +16,7 @@ namespace Koerselslog
     public partial class drivinglog : Form
     {
         int Index = 0;
-        private Crud api = new Crud();
+        private DataManager dataManager = new DataManager();
         DataTable drivinglogDT = new DataTable();
         DataTable usersDT = new DataTable();
 
@@ -32,11 +32,23 @@ namespace Koerselslog
             foreach (string item in items) combo.Items.Add(item);
         }
 
+        private async void ShowAndHideMessage(Label label, string message, Color color, int duration)
+        {
+            label.Text = message;
+            label.ForeColor = color;
+            label.Visible = true;
+
+            await Task.Delay(duration);
+
+            label.Visible = false;
+        }
+
+
         // Load user data from the database and populate dataGridView1
         public void fillUserData()
         {
             usersDT.Clear();
-            SqlDataAdapter da = new SqlDataAdapter("select [id], [name], [licensePlate], [date] from [dbo].[users] where [disabled]='false' or [disabled]='0'", api.connectionString);
+            SqlDataAdapter da = new SqlDataAdapter("select [id], [name], [licensePlate], [date] from [dbo].[users] where [disabled]='false' or [disabled]='0'", dataManager.connectionString);
             da.Fill(usersDT);
             dataGridView1.DataSource = usersDT;
 
@@ -47,7 +59,7 @@ namespace Koerselslog
         public void fillDrivingLogData()
         {
             drivinglogDT.Clear();
-            SqlDataAdapter da = new SqlDataAdapter("select [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[distance], [driving_logs].[date], [driving_logs].[user_id] from [dbo].[driving_logs] inner join [dbo].[users] on [users].[id]=[driving_logs].[user_id] where [driving_logs].[disabled]='false' or [driving_logs].[disabled]='0'", api.connectionString);
+            SqlDataAdapter da = new SqlDataAdapter("select [driving_logs].[id], [users].[name], [users].[licensePlate], [driving_logs].[assignment], [driving_logs].[distance], [driving_logs].[date], [driving_logs].[user_id] from [dbo].[driving_logs] inner join [dbo].[users] on [users].[id]=[driving_logs].[user_id] where [driving_logs].[disabled]='false' or [driving_logs].[disabled]='0'", dataManager.connectionString);
             da.Fill(drivinglogDT);
             dataGridView2.DataSource = drivinglogDT;
 
@@ -65,13 +77,16 @@ namespace Koerselslog
         {
             fillUserData();
             fillDrivingLogData();
-            updateComboBox(comboBox3, api.getNames());
+
+            panel1.AutoScroll = true;
+            comboBox3.Parent = panel1;
+            updateComboBox(comboBox3, dataManager.getNames());
         }
 
         // Handle right-click context menu for dataGridView1
         private void dataGridView1_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.RowIndex < dataGridView1.Rows.Count)
             {
                 Index = 0;
                 this.dataGridView1.Rows[e.RowIndex].Selected = true;
@@ -91,10 +106,10 @@ namespace Koerselslog
             {
                 int id = int.Parse(dataGridView1.Rows[Index].Cells[0].Value.ToString());
 
-                if (api.deleteUser(id) == 1)
+                if (dataManager.deleteUser(id) == 1)
                 {
                     fillUserData();
-                    updateComboBox(comboBox3, api.getNames());
+                    updateComboBox(comboBox3, dataManager.getNames());
                 }
                 else
                 {
@@ -135,19 +150,18 @@ namespace Koerselslog
             }
 
             // Display success message in label4
-            label4.Visible = true;
-            label4.ForeColor = Color.LightGreen;
-            label4.Text = "Bruger oprettet";
+            ShowAndHideMessage(label4, "Bruger oprettet", Color.LightGreen, 1000); // Viser i 1 sekund
+
 
             // Save user to the database
-            api.saveUser(new User(textBox1.Text, textBox2.Text, DateTime.Now.ToString()));
+            dataManager.saveUser(new User(textBox1.Text, textBox2.Text, DateTime.Now.ToString()));
 
             // Clear text fields
             textBox1.Clear();
             textBox2.Clear();
 
             // Update combobox and datagridview1
-            updateComboBox(comboBox3, api.getNames());
+            updateComboBox(comboBox3, dataManager.getNames());
             fillUserData();
 
             // Delay and hide the success message
@@ -173,7 +187,7 @@ namespace Koerselslog
                 }
 
                 // Get and display the license plate associated with the ID
-                textBox4.Text = new Crud().getLicensePlateFromId(id);
+                textBox4.Text = dataManager.getLicensePlateFromId(id);
             }
         }
 
@@ -222,7 +236,7 @@ namespace Koerselslog
             }
 
             // Create a new driving log entry
-            api.createDrivingLog(id, textBox5.Text, distance, dateTimePicker3.Value.ToString());
+            dataManager.createDrivingLog(id, textBox5.Text, distance, dateTimePicker3.Value.ToString());
             label11.Text = "Opgave oprettet!";
 
             // Clear fields and update DataGridView
@@ -241,7 +255,7 @@ namespace Koerselslog
         // Handle right-click context menu for dataGridView2
         private void dataGridView2_CellMouseUp(object sender, DataGridViewCellMouseEventArgs e)
         {
-            if (e.Button == MouseButtons.Right)
+            if (e.Button == MouseButtons.Right && e.RowIndex >= 0 && e.RowIndex < dataGridView2.Rows.Count)
             {
                 Index = 0;
                 this.dataGridView2.Rows[e.RowIndex].Selected = true;
@@ -261,7 +275,7 @@ namespace Koerselslog
             {
                 int id = int.Parse(dataGridView2.Rows[Index].Cells[0].Value.ToString());
 
-                if (api.deleteDrivingLog(id) == 1)
+                if (dataManager.deleteDrivingLog(id) == 1)
                 {
                     fillDrivingLogData();
                 }
@@ -305,7 +319,7 @@ namespace Koerselslog
             string columnName = dataGridView1.Columns[e.ColumnIndex].Name;
             string queryString = $"update [dbo].[users] set {columnName}=@updatedData where id=@id;";
 
-            using (SqlConnection connection = new SqlConnection(api.connectionString))
+            using (SqlConnection connection = new SqlConnection(dataManager.connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(queryString, connection);
@@ -324,7 +338,7 @@ namespace Koerselslog
             string columnName = dataGridView2.Columns[e.ColumnIndex].Name;
             string queryString = $"update [dbo].[driving_logs] set {columnName}=@updatedData where id=@id;";
 
-            using (SqlConnection connection = new SqlConnection(api.connectionString))
+            using (SqlConnection connection = new SqlConnection(dataManager.connectionString))
             {
                 connection.Open();
                 SqlCommand command = new SqlCommand(queryString, connection);
