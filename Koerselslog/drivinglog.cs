@@ -133,9 +133,6 @@ namespace Koerselslog
         // Handle the creation of a new user upon button click
         private void button2_Click(object sender, EventArgs e)
         {
-            // Initialize variables
-            string errorMessage = "";
-
             // Check if text fields meet requirements
             if (textBox1.TextLength <= 0)
             {
