@@ -34,11 +34,15 @@ namespace Koerselslog
 
         private async void ShowAndHideMessage(Label label, string message, Color color, int duration)
         {
+
             label.Text = message;
             label.ForeColor = color;
             label.Visible = true;
 
-            await Task.Delay(duration);
+            await Task.Run(async () =>
+            {
+                await Task.Delay(duration);
+            });
 
             label.Visible = false;
         }
@@ -144,13 +148,13 @@ namespace Koerselslog
                 label4.Visible = true;
                 label4.ForeColor = Color.Red;
                 label4.Text = errorMessage;
-                Task.Delay(3000).Wait();
+                //Task.Delay(3000).Wait();
                 label4.Visible = false;
                 return;
             }
 
             // Display success message in label4
-            ShowAndHideMessage(label4, "Bruger oprettet", Color.LightGreen, 1000); // Viser i 1 sekund
+            ShowAndHideMessage(label4, "Bruger oprettet", Color.LightGreen, 3000); // Viser i 1 sekund
 
 
             // Save user to the database
