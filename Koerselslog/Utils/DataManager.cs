@@ -24,7 +24,13 @@ namespace Koerselslog
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
-                connection.Open();
+                try
+                {
+                    connection.Open();
+                } catch {
+                    Debug.WriteLine("Databasen er ikke oppe");
+                    return;
+                }
                 
                 // Create the database if it doesn't exist
                 string createDbQuery = "IF NOT EXISTS (SELECT name FROM sys.databases WHERE name = 'drivinglog') CREATE DATABASE drivinglog;";

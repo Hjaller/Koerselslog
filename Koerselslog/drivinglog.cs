@@ -21,7 +21,6 @@ namespace Koerselslog
         DataTable usersDT = new DataTable();
 
         /* To do
-         * Gøre så man kan søge efter id
          * input validering
          */
 
@@ -302,10 +301,19 @@ namespace Koerselslog
         private void textBox3_TextChanged(object sender, EventArgs e)
         {
             DataView users_search = usersDT.DefaultView;
-            users_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%'";
+            users_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or id ="+getSearchId(textBox3.Text);
 
             DataView drivinglog_search = drivinglogDT.DefaultView;
-            drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%'";
+            drivinglog_search.RowFilter = "name Like '%" + textBox3.Text + "%' OR licensePlate Like '%" + textBox3.Text + "%' or assignment Like '%" + textBox3.Text + "%' OR date Like '%" + textBox3.Text + "%' or id ="+getSearchId(textBox3.Text);
+        }
+
+        private string getSearchId(string searchText)
+        {
+            if (int.TryParse(searchText, out int id))
+            { 
+                return id.ToString();
+            }
+            return "-1";
         }
 
         // Handle cell value change in dataGridView1 to update database
