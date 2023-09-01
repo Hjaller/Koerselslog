@@ -1,5 +1,5 @@
 # Koerselslog
-Programmet er lavet som opgave på p1. 
+Programmet er lavet som opgave på P1 i skoleoplæringscenteret. 
 Programmet indeholder alle krav og specifikationer, som opgaven kræver.
 
 
