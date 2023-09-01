@@ -163,10 +163,6 @@ namespace Koerselslog
             // Update combobox and datagridview1
             updateComboBox(comboBox3, dataManager.getNames());
             fillUserData();
-
-            // Delay and hide the success message
-            Task.Delay(1000).Wait();
-            label4.Visible = false;
         }
         // Handle the ComboBox's selected index change event
         private void comboBox3_SelectedIndexChanged(object sender, EventArgs e)
