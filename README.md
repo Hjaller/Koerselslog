@@ -1,5 +1,6 @@
 # Koerselslog
-Programmet er lavet i WinForms og bruger MS SQL server som database.
+Programmet er lavet som opgave på p1. 
+Programmet indeholder alle krav og specifikationer, som opgaven kræver.
 
 
 ## Funktioner
