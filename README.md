@@ -22,6 +22,6 @@ Med søge funktionen kan du søge efter det du leder efter både i brugerlisten 
 For at tislutte din MS Sql server med programmet, kan det gøres i **App.config**
 Programmet sørger selv for at oprette de fornødne databaser og tabeller.
 
-### Billeder
+## Billeder
 ![image](https://github.com/Hjaller/Koerselslog/assets/38131968/8325f65c-f965-42e3-89e3-a014be4a7e48)
 
